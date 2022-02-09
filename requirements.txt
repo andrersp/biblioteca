@@ -7,3 +7,5 @@ asyncpg==0.24.0
 alembic==1.7.1
 pytest #for teste
 requests # for test
+pytest_asyncio # for test
+aiosqlite # for test

@@ -2,7 +2,7 @@
 
 from fastapi import FastAPI
 
-from biblioteca.routers.v1.books import router as router_books
+from biblioteca.routers.v1.obras import router as router_books
 
 
 def init_app(app: FastAPI):

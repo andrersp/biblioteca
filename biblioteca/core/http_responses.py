@@ -24,6 +24,11 @@ ERROR_500 = [{
     "msg": "Internal error"
 }]
 
+ERROR_404 = [{
+    "type": "not_found",
+    "msg": "Regiter not found"
+}]
+
 
 def success(params: dict = {}, status_code: int = 200):
 
@@ -46,6 +51,9 @@ def error(params: List[dict] = [], status_code: int = 422):
     """
     if status_code == 500 and not params:
         params = ERROR_500
+
+    if status_code == 404 and not params:
+        params = ERROR_404
 
     response = {"success": False}
     response.update({'detail': params})

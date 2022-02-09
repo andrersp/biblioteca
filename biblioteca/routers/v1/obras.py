@@ -5,12 +5,12 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from biblioteca.core.http_responses import success, error
-from biblioteca.models.livro import ModelLivro, ModelLivroBase
+from biblioteca.models.obras import ModelObras, ModelObrasBase, SchemaObras
 from biblioteca.ext.database import get_session
-from biblioteca.crud import books as crud_book
+from biblioteca.crud import obras as crud_book
 
 
-router = APIRouter(tags=['Books'], prefix='/books')
+router = APIRouter(tags=['Books'], prefix='/obras')
 
 
 create_response = {
@@ -90,17 +90,31 @@ response_schema = {
 }
 
 
-@router.get("",  response_model=list[ModelLivro],  responses=response_schema)
+@router.get("",  response_model=list[ModelObras],  responses=response_schema)
 async def get_livros(session: AsyncSession = Depends(get_session)):
-    books = await crud_book.get_all_books(session)
-    return success({"data": books})
+    obras = await crud_book.get_all_books(session)
+    return success({"data": obras})
+
+
+@router.get("/{id_obra}")
+async def select_obra(id_obra: int, session: AsyncSession = Depends(get_session)):
+
+    obra = await crud_book.select_obra(session, id_obra)
+
+    if not obra:
+        return error(status_code=404)
+
+    return success(obra)
 
 
 @router.post("", responses=create_response)
-async def create_book(data: ModelLivroBase, session=Depends(get_session)):
+async def create_book(data: SchemaObras, session=Depends(get_session)):
 
-    book = await crud_book.create_book(session, data)
+    try:
+        book = await crud_book.create_book(session, data)
+    except Exception:
+        return error(status_code=500)
+    else:
+        book = await crud_book.select_obra(session, book)
 
-    return success(book.dict(), status_code=201)
-
-    return book
+    return success(book, status_code=201)
