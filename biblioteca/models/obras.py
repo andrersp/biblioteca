@@ -3,6 +3,7 @@
 from typing import Optional
 from sqlmodel import SQLModel, Field, ARRAY, String, Relationship
 from pydantic import BaseModel
+from sqlalchemy.orm import relationship
 
 
 class SchemaObras(BaseModel):
@@ -21,7 +22,8 @@ class ModelObrasBase(SQLModel):
 class ModelObras(ModelObrasBase, table=True):
     __tablename__ = 'obras'
     id: int | None = Field(None, primary_key=True)
-    autores: Optional['ModelAutores'] = Relationship(back_populates='obras')
+    autores: Optional['ModelAutores'] = Relationship(
+        sa_relationship=relationship('ModelAutores', cascade="all, delete", back_populates='obras'))
 
 
 class ModelAutores(SQLModel, table=True):

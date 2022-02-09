@@ -90,13 +90,13 @@ response_schema = {
 }
 
 
-@router.get("",  response_model=list[ModelObras],  responses=response_schema)
+@router.get("",  response_model=list[ModelObras],  responses=response_schema, summary="Retorna todas as obras do banco de dados")
 async def get_livros(session: AsyncSession = Depends(get_session)):
     obras = await crud_book.get_all_books(session)
     return success({"data": obras})
 
 
-@router.get("/{id_obra}")
+@router.get("/{id_obra}", summary="Seleciona uma obra pelo ID.")
 async def select_obra(id_obra: int, session: AsyncSession = Depends(get_session)):
 
     obra = await crud_book.select_obra(session, id_obra)
@@ -107,7 +107,7 @@ async def select_obra(id_obra: int, session: AsyncSession = Depends(get_session)
     return success(obra)
 
 
-@router.post("", responses=create_response)
+@router.post("", responses=create_response, summary="Cria uma nova obra no banco de dados")
 async def create_book(data: SchemaObras, session=Depends(get_session)):
 
     try:
@@ -118,3 +118,13 @@ async def create_book(data: SchemaObras, session=Depends(get_session)):
         book = await crud_book.select_obra(session, book)
 
     return success(book, status_code=201)
+
+
+@router.put("/{id_obra}", summary="Deleta uma obra pelo banco de dados")
+async def delete_obra(id_obra: int, session: AsyncSession = Depends(get_session)):
+
+    obra = await crud_book.delete_obra(session, id_obra)
+    if not obra:
+        return error(status_code=404)
+
+    return success()

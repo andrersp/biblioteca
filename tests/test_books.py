@@ -80,6 +80,7 @@ async def test_get_obras(client):
 
     data = result.get("data")
     assert response.status_code == 200, response.text
+    assert type(result.get("data")) == list
     assert len(data) > 0
 
 
@@ -87,9 +88,23 @@ async def test_get_obra(client):
     response = client.get(
         "/v1/obras/1",
     )
-    data = response.json()
+    result = response.json()
     assert response.status_code == 200
-    assert data.get("id") == 1
+    assert result.get("id") == 1
+
+    response = client.get(
+        "/v1/obras/2",
+    )
+    assert response.status_code == 404
+
+
+async def test_delete_obra(client):
+    response = client.put(
+        "/v1/obras/1",
+    )
+    result = response.json()
+    assert response.status_code == 200
+    assert result.get("success") == True
 
     response = client.get(
         "/v1/obras/2",

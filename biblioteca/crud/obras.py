@@ -26,6 +26,17 @@ async def select_obra(session: AsyncSession, id: int) -> ModelObras:
     return _serialize_obra(obra)
 
 
+async def delete_obra(session: AsyncSession, id: int) -> bool:
+
+    obra = await session.get(ModelObras, id)
+
+    if obra:
+        await session.delete(obra)
+        await session.commit()
+        return True
+    return False
+
+
 async def get_all_books(session: AsyncSession) -> list[ModelObras]:
 
     query = select(ModelObras).options(selectinload(ModelObras.autores),)
