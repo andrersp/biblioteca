@@ -1,5 +1,5 @@
 
-## Deploy
+## TO RUN
 ```sh
 git clone https://github.com/andrersp/biblioteca.git
 
